@@ -16,6 +16,10 @@ const { ApolloServer, gql } = require('apollo-server'); // to parse the schema
     That's the interface of our API.
 */
 const typeDefs = gql`
+  schema {
+    query: Query
+  }
+
   type Query {
     greeting: String
   }
