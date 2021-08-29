@@ -1,6 +1,11 @@
 const db = require('./db');
 
 const Query = {
+  // return single job for given id
+  // each resolver function receives some arguments
+  // - the 1st argument is the parent object, 2nd arg is argument object received for this query
+  job: (root, { id }) => db.jobs.get(id),
+
   // graphql will return only requested fields, we don't have to do anything special for that.
   jobs: () => db.jobs.list(),
 };

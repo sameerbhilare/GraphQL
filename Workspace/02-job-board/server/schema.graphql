@@ -1,4 +1,9 @@
 type Query {
+  # query to return single job
+  # passing arg to graphql query
+  job(id: ID!): Job
+
+  # query to return all jobs
   jobs: [Job] # an array of jobs
 }
 
