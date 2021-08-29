@@ -13,6 +13,10 @@ const graphqlRequest = async (query, variables = {}) => {
   });
 
   const responseData = await response.json();
+  if (responseData.errors) {
+    const message = responseData.errors.map((err) => err.message).join('\n');
+    throw new Error(message);
+  }
   return responseData.data;
 };
 
