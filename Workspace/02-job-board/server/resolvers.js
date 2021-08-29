@@ -1,6 +1,11 @@
 const db = require('./db');
 
 const Query = {
+  // return single company for given id
+  // each resolver function receives some arguments
+  // - the 1st argument is the parent object, 2nd arg is argument object received for this query
+  company: (root, { id }) => db.companies.get(id),
+
   // return single job for given id
   // each resolver function receives some arguments
   // - the 1st argument is the parent object, 2nd arg is argument object received for this query

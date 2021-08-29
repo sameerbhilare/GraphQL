@@ -1,4 +1,8 @@
 type Query {
+  # query to return single company
+  # passing arg to graphql query
+  company(id: ID!): Company
+
   # query to return single job
   # passing arg to graphql query
   job(id: ID!): Job

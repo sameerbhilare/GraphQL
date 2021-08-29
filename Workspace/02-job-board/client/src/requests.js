@@ -1,5 +1,6 @@
 const endpointUrl = 'http://localhost:9000/graphql';
 
+// calling graphql endpoint (common)
 const graphqlRequest = async (query, variables = {}) => {
   const response = await fetch(endpointUrl, {
     method: 'POST',
@@ -8,7 +9,7 @@ const graphqlRequest = async (query, variables = {}) => {
     },
     body: JSON.stringify({
       query,
-      variables,
+      variables, // varibles (if any) to given query
     }),
   });
 
@@ -55,4 +56,18 @@ export const loadJobs = async () => {
 
   const data = await graphqlRequest(query);
   return data.jobs;
+};
+
+// fetch single company
+export const loadCompany = async (id) => {
+  const query = `query CompanyQuery($id: ID!){
+        company(id: $id) {
+          id
+          name
+          description
+        }
+      }`;
+
+  const data = await graphqlRequest(query, { id });
+  return data.company;
 };
