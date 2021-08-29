@@ -1,3 +1,11 @@
 type Query {
-  greeting: String
+  jobs: [Job] # an array of jobs
+}
+
+type Job {
+  # 'ID' means unique identifier
+  # ! mark after 'ID' means it should never be null
+  id: ID!
+  title: String
+  description: String
 }
