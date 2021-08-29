@@ -20,4 +20,9 @@ const Job = {
   company: (job) => db.companies.get(job.companyId), // 'job' obj returned fromDB has 'companyId' field (refer jobs.json)
 };
 
-module.exports = { Query, Job };
+const Company = {
+  // each resolver function receives some arguments - the 1st argument is the parent object
+  jobs: (company) => db.jobs.list().filter((job) => job.companyId === company.id),
+};
+
+module.exports = { Query, Job, Company };

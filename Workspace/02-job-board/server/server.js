@@ -6,7 +6,7 @@ const express = require('express');
 const expressJwt = require('express-jwt');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
-const { Query, Job } = require('./resolvers');
+const { Query, Job, Company } = require('./resolvers');
 
 const port = 9000;
 const jwtSecret = Buffer.from('Zn8Q5tyZ/G1MHltc4F/gTkVJMlrbKiZt', 'base64');
@@ -26,7 +26,7 @@ const typeDefs = gql(fs.readFileSync('./schema.graphql', { encoding: 'utf-8' }))
 console.log(typeDefs);
 
 // define resolvers
-const resolvers = { Query, Job };
+const resolvers = { Query, Job, Company };
 console.log(resolvers);
 
 // define apollo server
