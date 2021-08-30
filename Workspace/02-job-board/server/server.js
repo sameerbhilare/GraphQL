@@ -31,7 +31,7 @@ const typeDefs = gql(fs.readFileSync('./schema.graphql', { encoding: 'utf-8' }))
 
 // define resolvers
 const resolvers = { Query, Job, Company, Mutation };
-console.log(resolvers);
+//console.log(resolvers);
 
 const context = ({ req }) => ({
   // here we can extract any information we're interested in from the HTTP request
