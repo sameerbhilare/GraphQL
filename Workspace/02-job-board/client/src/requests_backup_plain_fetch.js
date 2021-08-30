@@ -1,17 +1,6 @@
-import { ApolloClient, HttpLink, InMemoryCache } from 'apollo-boost';
 import { getAccessToken, isLoggedIn } from './auth';
 
 const endpointUrl = 'http://localhost:9000/graphql';
-
-// create Apollo Client
-const client = new ApolloClient({
-  // how to connect to server
-  link: new HttpLink({ uri: endpointUrl }),
-
-  // caching is one of main features of Apollo Client
-  // there are many implementations of caching storage e.g. InMemoryCache, local storage, Async storage
-  cache: new InMemoryCache(),
-});
 
 // calling graphql endpoint (common)
 const graphqlRequest = async (query, variables = {}) => {
