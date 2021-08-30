@@ -1,8 +1,10 @@
+import { getAccessToken, isLoggedIn } from './auth';
+
 const endpointUrl = 'http://localhost:9000/graphql';
 
 // calling graphql endpoint (common)
 const graphqlRequest = async (query, variables = {}) => {
-  const response = await fetch(endpointUrl, {
+  const request = {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -11,7 +13,14 @@ const graphqlRequest = async (query, variables = {}) => {
       query,
       variables, // varibles (if any) to given query
     }),
-  });
+  };
+
+  // Add 'Authorization' header for logged in user
+  if (isLoggedIn()) {
+    request.headers['Authorization'] = 'Bearer ' + getAccessToken();
+  }
+
+  const response = await fetch(endpointUrl, request);
 
   const responseData = await response.json();
   if (responseData.errors) {
