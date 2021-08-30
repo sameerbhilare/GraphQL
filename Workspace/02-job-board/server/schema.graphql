@@ -11,6 +11,14 @@ type Query {
   jobs: [Job] # an array of jobs
 }
 
+# In GraphQL, to modify data, we need to use Mutation.
+# 'Mutation' is root type just like 'Query'.
+type Mutation {
+  # In 'Mutation', we can define operations which usually take args
+  # All mutations must return a result
+  createJob(companyId: ID, title: String, description: String): ID
+}
+
 type Company {
   # 'ID' means unique identifier
   # ! mark after 'ID' means it should never be null

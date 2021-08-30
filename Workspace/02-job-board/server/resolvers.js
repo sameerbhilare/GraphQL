@@ -15,6 +15,13 @@ const Query = {
   jobs: () => db.jobs.list(),
 };
 
+const Mutation = {
+  // the 1st argument is the parent object, 2nd arg is params object passed
+  createJob: (root, { companyId, title, description }) => {
+    return db.jobs.create({ companyId, title, description });
+  },
+};
+
 const Job = {
   // each resolver function receives some arguments - the 1st argument is the parent object
   company: (job) => db.companies.get(job.companyId), // 'job' obj returned fromDB has 'companyId' field (refer jobs.json)
@@ -25,4 +32,4 @@ const Company = {
   jobs: (company) => db.jobs.list().filter((job) => job.companyId === company.id),
 };
 
-module.exports = { Query, Job, Company };
+module.exports = { Query, Job, Company, Mutation };
