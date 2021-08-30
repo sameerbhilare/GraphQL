@@ -16,7 +16,7 @@ type Query {
 type Mutation {
   # In 'Mutation', we can define operations which usually take args
   # All mutations must return a result
-  createJob(companyId: ID, title: String, description: String): ID
+  createJob(input: CreateJobInput): Job
 }
 
 type Company {
@@ -34,5 +34,12 @@ type Job {
   id: ID!
   title: String
   company: Company
+  description: String
+}
+
+# input types accepted by queries/mutations
+input CreateJobInput {
+  companyId: ID
+  title: String
   description: String
 }

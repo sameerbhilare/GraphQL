@@ -17,8 +17,9 @@ const Query = {
 
 const Mutation = {
   // the 1st argument is the parent object, 2nd arg is params object passed
-  createJob: (root, { companyId, title, description }) => {
-    return db.jobs.create({ companyId, title, description });
+  createJob: (root, { input }) => {
+    const id = db.jobs.create(input);
+    return db.jobs.get(id);
   },
 };
 
