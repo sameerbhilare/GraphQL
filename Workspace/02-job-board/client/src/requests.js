@@ -35,27 +35,27 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-// fetch single job
-export const loadJob = async (id) => {
-  /* gql is a tag function. 
+/* gql is a tag function. 
   It basically means that given template literal string will be processed by the gql function.
   This gql function does is effectively parsing this string into an object that represents the GraphQL query
   */
-  const query = gql`
-    query JobQuery($id: ID!) {
-      job(id: $id) {
+const jobQuery = gql`
+  query JobQuery($id: ID!) {
+    job(id: $id) {
+      id
+      title
+      company {
         id
-        title
-        company {
-          id
-          name
-        }
-        description
+        name
       }
+      description
     }
-  `;
+  }
+`;
 
-  const { data } = await client.query({ query: query, variables: { id } });
+// fetch single job
+export const loadJob = async (id) => {
+  const { data } = await client.query({ query: jobQuery, variables: { id } });
   return data.job;
 };
 
@@ -123,11 +123,27 @@ export const createJob = async (input) => {
           id
           name
         }
+        description
       }
     }
   `;
 
   // mutation
-  const { data } = await client.mutate({ mutation: mutation, variables: { input } });
+  const { data } = await client.mutate({
+    mutation: mutation,
+    variables: { input },
+    // update is a function that will be called after the mutation has been executed
+    // 1st arg is ref to 'cache' object and 2nd arg is mutation result
+    update: (cache, mutationResult) => {
+      console.log({ mutationResult });
+      // the idea here is to save the data in the mutationResult to the cache
+      // so that apollo client does not make a network request for a call on the job details page as soon as we navigate
+      cache.writeQuery({
+        query: jobQuery, // query for which 'data' to be saved
+        variables: { id: mutationResult.data.job.id }, // arguments to the query
+        data: mutationResult.data, // data to be saved
+      });
+    },
+  });
   return data.job;
 };
