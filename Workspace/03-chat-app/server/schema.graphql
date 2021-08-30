@@ -6,9 +6,16 @@ type Mutation {
   addMessage(input: MessageInput!): Message
 }
 
+# A "Subscription" is another operation type, just like "Query" and "Mutation".
+#  subscriptions use "WebSockets" protocol.
+type Subscription {
+  # by convention for subscriptions, we usually choose a name that describes an event e.g. messageAdded
+  messageAdded: Message
+}
+
 type Message {
   id: ID!
-  from: String 
+  from: String
   text: String
 }
 
