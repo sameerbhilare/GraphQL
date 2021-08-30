@@ -25,6 +25,8 @@ const client = new ApolloClient({
   link: ApolloLink.from([
     // add auth link before HttpLink so that 'authLink' will be executed first and then HttpLink
     authLink,
+
+    // send request over HTTP
     new HttpLink({ uri: endpointUrl }),
   ]),
 
