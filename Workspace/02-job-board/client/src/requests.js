@@ -36,35 +36,42 @@ const client = new ApolloClient({
 });
 
 /* gql is a tag function. 
-  It basically means that given template literal string will be processed by the gql function.
-  This gql function does is effectively parsing this string into an object that represents the GraphQL query
-  */
+It basically means that given template literal string will be processed by the gql function.
+This gql function does is effectively parsing this string into an object that represents the GraphQL query
+*/
+
+// we can use a fragment to define a group of fields that we want to reuse in multiple places
+const jobDetailFragment = gql`
+  # we need to declare on which type, we need to apply the fragment. Here its 'Job'
+  fragment JobDetail on Job {
+    id
+    title
+    company {
+      id
+      name
+    }
+    description
+  }
+`;
+
 const createJobMutation = gql`
   mutation CreateJob($input: CreateJobInput) {
     job: createJob(input: $input) {
-      id
-      title
-      company {
-        id
-        name
-      }
-      description
+      ...JobDetail # using the fragment
     }
   }
+  # including the fragment definition
+  ${jobDetailFragment}
 `;
 
 const jobQuery = gql`
   query JobQuery($id: ID!) {
     job(id: $id) {
-      id
-      title
-      company {
-        id
-        name
-      }
-      description
+      ...JobDetail # using the fragment
     }
   }
+  # including the fragment definition
+  ${jobDetailFragment}
 `;
 
 const allJobsQuery = gql`
