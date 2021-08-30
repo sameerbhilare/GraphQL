@@ -132,10 +132,12 @@ export const createJob = async (input) => {
   const { data } = await client.mutate({
     mutation: mutation,
     variables: { input },
+
     // update is a function that will be called after the mutation has been executed
     // 1st arg is ref to 'cache' object and 2nd arg is mutation result
     update: (cache, mutationResult) => {
       console.log({ mutationResult });
+
       // the idea here is to save the data in the mutationResult to the cache
       // so that apollo client does not make a network request for a call on the job details page as soon as we navigate
       cache.writeQuery({
