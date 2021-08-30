@@ -39,6 +39,20 @@ const client = new ApolloClient({
   It basically means that given template literal string will be processed by the gql function.
   This gql function does is effectively parsing this string into an object that represents the GraphQL query
   */
+const createJobMutation = gql`
+  mutation CreateJob($input: CreateJobInput) {
+    job: createJob(input: $input) {
+      id
+      title
+      company {
+        id
+        name
+      }
+      description
+    }
+  }
+`;
+
 const jobQuery = gql`
   query JobQuery($id: ID!) {
     job(id: $id) {
@@ -53,6 +67,33 @@ const jobQuery = gql`
   }
 `;
 
+const allJobsQuery = gql`
+  query JobsQuery {
+    jobs {
+      id
+      title
+      company {
+        id
+        name
+      }
+    }
+  }
+`;
+
+const companyQuery = gql`
+  query CompanyQuery($id: ID!) {
+    company(id: $id) {
+      id
+      name
+      description
+      jobs {
+        id
+        title
+      }
+    }
+  }
+`;
+
 // fetch single job
 export const loadJob = async (id) => {
   const { data } = await client.query({ query: jobQuery, variables: { id } });
@@ -61,76 +102,27 @@ export const loadJob = async (id) => {
 
 // fetch all jobs
 export const loadJobs = async () => {
-  /* gql is a tag function. 
-  It basically means that given template literal string will be processed by the gql function.
-  This gql function does is effectively parsing this string into an object that represents the GraphQL query
-  */
-  const query = gql`
-    {
-      jobs {
-        id
-        title
-        company {
-          id
-          name
-        }
-      }
-    }
-  `;
-
   /*
   While querying, we can pass fetchPolicy.
   cache-first - is default, means it will try getting the data from the cache first 
                 and only if it doesn't find it in the cache then it will call the server.
   no-cache - means it will never use the cache it will always fetch the data from the server
   */
-  const { data } = await client.query({ query: query, fetchPolicy: 'no-cache' });
+  const { data } = await client.query({ query: allJobsQuery, fetchPolicy: 'no-cache' });
   return data.jobs;
 };
 
 // fetch single company
 export const loadCompany = async (id) => {
-  /* gql is a tag function. 
-  It basically means that given template literal string will be processed by the gql function.
-  This gql function does is effectively parsing this string into an object that represents the GraphQL query
-  */
-  const query = gql`
-    query CompanyQuery($id: ID!) {
-      company(id: $id) {
-        id
-        name
-        description
-        jobs {
-          id
-          title
-        }
-      }
-    }
-  `;
-
-  const { data } = await client.query({ query: query, variables: { id } });
+  const { data } = await client.query({ query: companyQuery, variables: { id } });
   return data.company;
 };
 
 // create a new job
 export const createJob = async (input) => {
-  const mutation = gql`
-    mutation CreateJob($input: CreateJobInput) {
-      job: createJob(input: $input) {
-        id
-        title
-        company {
-          id
-          name
-        }
-        description
-      }
-    }
-  `;
-
   // mutation
   const { data } = await client.mutate({
-    mutation: mutation,
+    mutation: createJobMutation,
     variables: { input },
 
     // update is a function that will be called after the mutation has been executed
