@@ -1,4 +1,5 @@
 const fs = require('fs');
+const http = require('http');
 const { ApolloServer } = require('apollo-server-express');
 const cors = require('cors');
 const express = require('express');
@@ -10,34 +11,44 @@ const port = 9000;
 const jwtSecret = Buffer.from('xkMBdsE+P6242Z2dPV3RD91BPbLIko7t', 'base64');
 
 const app = express();
-app.use(cors(), express.json(), expressJwt({
-  credentialsRequired: false,
-  secret: jwtSecret,
-  algorithms: ['HS256']
-}));
+app.use(
+  cors(),
+  express.json(),
+  expressJwt({
+    credentialsRequired: false,
+    secret: jwtSecret,
+    algorithms: ['HS256'],
+  })
+);
 
-const typeDefs = fs.readFileSync('./schema.graphql', {encoding: 'utf8'});
+const typeDefs = fs.readFileSync('./schema.graphql', { encoding: 'utf8' });
 const resolvers = require('./resolvers');
 
-function context({req}) {
+function context({ req }) {
   if (req && req.user) {
-    return {userId: req.user.sub};
+    return { userId: req.user.sub };
   }
   return {};
 }
 
-const apolloServer = new ApolloServer({typeDefs, resolvers, context});
-apolloServer.applyMiddleware({app, path: '/graphql'});
+const apolloServer = new ApolloServer({ typeDefs, resolvers, context });
+apolloServer.applyMiddleware({ app, path: '/graphql' });
 
 app.post('/login', (req, res) => {
-  const {name, password} = req.body;
+  const { name, password } = req.body;
   const user = db.users.get(name);
   if (!(user && user.password === password)) {
     res.sendStatus(401);
     return;
   }
-  const token = jwt.sign({sub: user.id}, jwtSecret);
-  res.send({token});
+  const token = jwt.sign({ sub: user.id }, jwtSecret);
+  res.send({ token });
 });
 
-app.listen(port, () => console.log(`Server started on port ${port}`));
+// create http server
+const httpServer = http.createServer(app);
+// enable a websocket to be used for GraphQL at url ws://localhost:<port>/graphql
+apolloServer.installSubscriptionHandlers(httpServer);
+
+// start listening to the server
+httpServer.listen(port, () => console.log(`Server started on port ${port}`));

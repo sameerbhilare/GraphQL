@@ -7,7 +7,7 @@ type Mutation {
 }
 
 # A "Subscription" is another operation type, just like "Query" and "Mutation".
-#  subscriptions use "WebSockets" protocol.
+# GranhQL subscriptions use "WebSockets" protocol.
 type Subscription {
   # by convention for subscriptions, we usually choose a name that describes an event e.g. messageAdded
   messageAdded: Message
