@@ -12,9 +12,13 @@ const port = 9000;
 const jwtSecret = Buffer.from('Zn8Q5tyZ/G1MHltc4F/gTkVJMlrbKiZt', 'base64');
 
 const app = express();
+
 app.use(
   cors(),
   bodyParser.json(),
+
+  // if the request contains a valid token this middleware will set 'req.user'
+  // to contain the information decoded from the token.
   expressJwt({
     secret: jwtSecret,
     credentialsRequired: false,
@@ -23,14 +27,19 @@ app.use(
 
 // declare schema
 const typeDefs = gql(fs.readFileSync('./schema.graphql', { encoding: 'utf-8' }));
-console.log(typeDefs);
+//console.log(typeDefs);
 
 // define resolvers
 const resolvers = { Query, Job, Company, Mutation };
 console.log(resolvers);
 
+const context = ({ req }) => ({
+  // here we can extract any information we're interested in from the HTTP request
+  // and make it available in the 'context' visible to our resolvers.
+  user: req.user, // req.user is set by 'expressJwt' above
+});
 // define apollo server
-const apolloServer = new ApolloServer({ typeDefs, resolvers });
+const apolloServer = new ApolloServer({ typeDefs, resolvers, context: context });
 
 // plug-in apollo server to existing express server
 apolloServer.applyMiddleware({ app, path: '/graphql' }); // by default path: '/graphql'

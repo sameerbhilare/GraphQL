@@ -17,7 +17,14 @@ const Query = {
 
 const Mutation = {
   // the 1st argument is the parent object, 2nd arg is params object passed
-  createJob: (root, { input }) => {
+  // 3rd arg can be used to access things that are not part of GraphQL itself but are provided by our application.
+  createJob: (root, { input }, context) => {
+    //console.log('context =>', context);
+    // check if user is authenticated
+    // 'user' is set on 'context' in server.js
+    if (!context.user) {
+      throw new Error('Unauthorized!');
+    }
     const id = db.jobs.create(input);
     return db.jobs.get(id);
   },
