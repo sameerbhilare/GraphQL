@@ -78,7 +78,13 @@ export const loadJobs = async () => {
     }
   `;
 
-  const { data } = await client.query({ query: query });
+  /*
+  While querying, we can pass fetchPolicy.
+  cache-first - is default, means it will try getting the data from the cache first 
+                and only if it doesn't find it in the cache then it will call the server.
+  no-cache - means it will never use the cache it will always fetch the data from the server
+  */
+  const { data } = await client.query({ query: query, fetchPolicy: 'no-cache' });
   return data.jobs;
 };
 
