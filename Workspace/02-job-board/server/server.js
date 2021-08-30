@@ -36,7 +36,7 @@ console.log(resolvers);
 const context = ({ req }) => ({
   // here we can extract any information we're interested in from the HTTP request
   // and make it available in the 'context' visible to our resolvers.
-  user: req.user, // req.user is set by 'expressJwt' above
+  user: req.user && db.users.get(req.user.sub), // req.user is set by 'expressJwt' above
 });
 // define apollo server
 const apolloServer = new ApolloServer({ typeDefs, resolvers, context: context });

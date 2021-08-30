@@ -14,10 +14,7 @@ export class JobForm extends Component {
   async handleClick(event) {
     event.preventDefault();
 
-    // FIXME temporary hack
-    const companyId = 'SJV0-wdOM';
     const job = await createJob({
-      companyId,
       title: this.state.title,
       description: this.state.description,
     });

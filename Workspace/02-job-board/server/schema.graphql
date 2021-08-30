@@ -39,7 +39,6 @@ type Job {
 
 # input types accepted by queries/mutations
 input CreateJobInput {
-  companyId: ID
   title: String
   description: String
 }
