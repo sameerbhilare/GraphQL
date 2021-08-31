@@ -26,6 +26,16 @@ const wsLink = new WebSocketLink({
 
     // if the WebSocket connection is interrupted for whatever reason, the client will try to reconnect.
     reconnect: true,
+
+    /*
+    'connectionParams' is used to pass extra values to the server when establishing a GraphQL WebSocket connection.
+    And "connectionParams" can either be an object, or a function returning an object.
+    Using a function is useful if the values in the object can change over time, 
+    and you want to use the latest values available when the connection start.
+    */
+    connectionParams: () => ({
+      accessToken: getAccessToken(),
+    }),
   },
 });
 
