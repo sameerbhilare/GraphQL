@@ -24,10 +24,22 @@ app.use(
 const typeDefs = fs.readFileSync('./schema.graphql', { encoding: 'utf8' });
 const resolvers = require('./resolvers');
 
-function context({ req }) {
+function context(params) {
+  // In case of http, Object.keys(params) prints 'req' and 'res'
+  // In case of ws, Object.keys(params) prints 'connection' and 'payload'
+  console.log('context params =>', Object.keys(params)); // prints only property names of 'params' obj
+  const { req, connection } = params;
   if (req && req.user) {
     return { userId: req.user.sub };
   }
+
+  if (connection && connection.context && connection.context.accessToken) {
+    console.log('connection - ', connection);
+    // 'accessToken' is what passed in the ws 'payload' while creating the ws connection
+    const decodedToken = jwt.verify(connection.context.accessToken, jwtSecret);
+    return { userId: decodedToken.sub };
+  }
+
   return {};
 }
 

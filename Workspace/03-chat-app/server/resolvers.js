@@ -38,7 +38,11 @@ const Subscription = {
     // 'iterator' because with a subscription, the client doesn't receive a single value,
     // like with a query, but it can receive multiple values over time.
     // This will take care of notifying all the subscribers every time we publish a new message.
-    subscribe: () => pubSub.asyncIterator(MESSAGE_ADDED),
+    // in 'subscribe', we receive 3rd param as context obj just like for queries and mutations.
+    subscribe: (_root, _args, { userId }) => {
+      requireAuth(userId);
+      return pubSub.asyncIterator(MESSAGE_ADDED);
+    },
   },
 };
 
